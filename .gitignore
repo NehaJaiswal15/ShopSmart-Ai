@@ -1,3 +1,30 @@
+# Environment & Secrets
 .env
+
+# Python
+__pycache__/
+*.pyc
+*.pyo
+*.egg-info/
+FLIPKART_RECOMMENDER.egg-info/
+dist/
+build/
+
+# Virtual environments
 venv/
-FLIPKART_RECOMMENDER.egg-info
+.venv/
+
+# Logs
+logs/
+*.log
+
+# ML model artifacts (too large for git)
+ml/sentiment/model/
+
+# IDE
+.vscode/
+.idea/
+
+# OS
+.DS_Store
+Thumbs.db
