@@ -20,6 +20,11 @@ logs/
 
 # ML model artifacts (too large for git)
 ml/sentiment/model/
+ml/sentiment/checkpoints/
+
+# Jupyter
+.ipynb_checkpoints/
+notebooks/.ipynb_checkpoints/
 
 # IDE
 .vscode/

@@ -14,7 +14,6 @@ Usage:
     python -m ml.sentiment.train_distilbert
 """
 import os
-import sys
 import json
 import time
 import numpy as np
@@ -30,8 +29,6 @@ from transformers import (
     TrainingArguments,
 )
 
-# Add project root to path
-sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.dirname(__file__))))
 from flipkart.data_preprocessing import clean_text
 
 

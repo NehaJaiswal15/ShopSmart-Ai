@@ -28,9 +28,6 @@ from sklearn.metrics import (
 )
 import joblib
 
-# Add project root to path for imports
-import sys
-sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.dirname(__file__))))
 from flipkart.data_preprocessing import clean_text
 
 
