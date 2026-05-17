@@ -24,14 +24,14 @@ PRODUCT_KEYWORDS = [
 
 
 def _is_product_related(user_input: str, answer: str) -> bool:
-    """Check if the conversation is about products (not greetings/small talk).
+    """Check if the USER is asking about products (not greetings/small talk).
     
-    Returns True only when the user query or bot response contains
-    product-related keywords, so sentiment badges don't appear
-    on greetings like 'hello' or 'how are you'.
+    Only checks the user's input — not the bot's response — because
+    the bot often mentions products even in greetings like
+    'Are you looking for a Bluetooth headset?'
     """
-    combined = (user_input + " " + answer).lower()
-    return any(kw in combined for kw in PRODUCT_KEYWORDS)
+    query = user_input.lower()
+    return any(kw in query for kw in PRODUCT_KEYWORDS)
 
 
 def create_app():
@@ -97,7 +97,7 @@ def create_app():
                         summary_parts.append(f"{emoji} {label}: {count}")
 
                 if summary_parts:
-                    sentiment_line = "\n\n📊 Review Sentiment: " + " | ".join(summary_parts)
+                    sentiment_line = "\n\n---\n📊 Review Sentiment: " + " | ".join(summary_parts)
                     answer += sentiment_line
             except Exception as e:
                 logger.error(f"Sentiment analysis failed: {e}")
