@@ -1,0 +1,235 @@
+{
+  "timestamp": "20260517_211821",
+  "strategies": [
+    "vector",
+    "bm25",
+    "hybrid"
+  ],
+  "comparison": {
+    "vector": {
+      "total_cases": 25,
+      "successful_cases": 25,
+      "failed_cases": 0,
+      "avg_latency_seconds": 2.9,
+      "avg_scores": {
+        "answer_correctness": 0.9,
+        "context_relevance": 0.74,
+        "faithfulness": 0.868
+      },
+      "scores_by_category": {
+        "budget_query": {
+          "answer_correctness": 0.5,
+          "context_relevance": 0.0,
+          "faithfulness": 0.5,
+          "count": 2
+        },
+        "comparison": {
+          "answer_correctness": 1.0,
+          "context_relevance": 0.667,
+          "faithfulness": 0.933,
+          "count": 3
+        },
+        "feature_query": {
+          "answer_correctness": 1.0,
+          "context_relevance": 1.0,
+          "faithfulness": 1.0,
+          "count": 2
+        },
+        "general": {
+          "answer_correctness": 1.0,
+          "context_relevance": 1.0,
+          "faithfulness": 1.0,
+          "count": 1
+        },
+        "negative_query": {
+          "answer_correctness": 1.0,
+          "context_relevance": 1.0,
+          "faithfulness": 0.9,
+          "count": 2
+        },
+        "out_of_scope": {
+          "answer_correctness": 1.0,
+          "context_relevance": 1.0,
+          "faithfulness": 0.8,
+          "count": 2
+        },
+        "price_query": {
+          "answer_correctness": 0.667,
+          "context_relevance": 0.667,
+          "faithfulness": 0.933,
+          "count": 3
+        },
+        "quality_query": {
+          "answer_correctness": 1.0,
+          "context_relevance": 1.0,
+          "faithfulness": 0.92,
+          "count": 5
+        },
+        "rating_query": {
+          "answer_correctness": 1.0,
+          "context_relevance": 1.0,
+          "faithfulness": 0.8,
+          "count": 2
+        },
+        "recommendation": {
+          "answer_correctness": 0.833,
+          "context_relevance": 0.167,
+          "faithfulness": 0.833,
+          "count": 3
+        }
+      },
+      "strategy": "vector",
+      "total_time_seconds": 72.4
+    },
+    "bm25": {
+      "total_cases": 25,
+      "successful_cases": 25,
+      "failed_cases": 0,
+      "avg_latency_seconds": 5.19,
+      "avg_scores": {
+        "answer_correctness": 0.82,
+        "context_relevance": 0.74,
+        "faithfulness": 0.912
+      },
+      "scores_by_category": {
+        "budget_query": {
+          "answer_correctness": 1.0,
+          "context_relevance": 0.5,
+          "faithfulness": 0.9,
+          "count": 2
+        },
+        "comparison": {
+          "answer_correctness": 0.833,
+          "context_relevance": 0.833,
+          "faithfulness": 0.867,
+          "count": 3
+        },
+        "feature_query": {
+          "answer_correctness": 1.0,
+          "context_relevance": 1.0,
+          "faithfulness": 0.9,
+          "count": 2
+        },
+        "general": {
+          "answer_correctness": 1.0,
+          "context_relevance": 1.0,
+          "faithfulness": 1.0,
+          "count": 1
+        },
+        "negative_query": {
+          "answer_correctness": 0.5,
+          "context_relevance": 1.0,
+          "faithfulness": 0.9,
+          "count": 2
+        },
+        "out_of_scope": {
+          "answer_correctness": 1.0,
+          "context_relevance": 1.0,
+          "faithfulness": 0.8,
+          "count": 2
+        },
+        "price_query": {
+          "answer_correctness": 0.667,
+          "context_relevance": 0.667,
+          "faithfulness": 1.0,
+          "count": 3
+        },
+        "quality_query": {
+          "answer_correctness": 0.8,
+          "context_relevance": 0.8,
+          "faithfulness": 0.88,
+          "count": 5
+        },
+        "rating_query": {
+          "answer_correctness": 0.5,
+          "context_relevance": 0.5,
+          "faithfulness": 0.9,
+          "count": 2
+        },
+        "recommendation": {
+          "answer_correctness": 1.0,
+          "context_relevance": 0.333,
+          "faithfulness": 1.0,
+          "count": 3
+        }
+      },
+      "strategy": "bm25",
+      "total_time_seconds": 129.9
+    },
+    "hybrid": {
+      "total_cases": 25,
+      "successful_cases": 25,
+      "failed_cases": 0,
+      "avg_latency_seconds": 7.99,
+      "avg_scores": {
+        "answer_correctness": 0.96,
+        "context_relevance": 0.82,
+        "faithfulness": 0.898
+      },
+      "scores_by_category": {
+        "budget_query": {
+          "answer_correctness": 1.0,
+          "context_relevance": 0.5,
+          "faithfulness": 0.875,
+          "count": 2
+        },
+        "comparison": {
+          "answer_correctness": 1.0,
+          "context_relevance": 0.833,
+          "faithfulness": 0.933,
+          "count": 3
+        },
+        "feature_query": {
+          "answer_correctness": 1.0,
+          "context_relevance": 1.0,
+          "faithfulness": 0.9,
+          "count": 2
+        },
+        "general": {
+          "answer_correctness": 1.0,
+          "context_relevance": 1.0,
+          "faithfulness": 1.0,
+          "count": 1
+        },
+        "negative_query": {
+          "answer_correctness": 1.0,
+          "context_relevance": 1.0,
+          "faithfulness": 0.9,
+          "count": 2
+        },
+        "out_of_scope": {
+          "answer_correctness": 1.0,
+          "context_relevance": 1.0,
+          "faithfulness": 0.8,
+          "count": 2
+        },
+        "price_query": {
+          "answer_correctness": 0.667,
+          "context_relevance": 0.667,
+          "faithfulness": 1.0,
+          "count": 3
+        },
+        "quality_query": {
+          "answer_correctness": 1.0,
+          "context_relevance": 1.0,
+          "faithfulness": 0.92,
+          "count": 5
+        },
+        "rating_query": {
+          "answer_correctness": 1.0,
+          "context_relevance": 1.0,
+          "faithfulness": 0.8,
+          "count": 2
+        },
+        "recommendation": {
+          "answer_correctness": 1.0,
+          "context_relevance": 0.333,
+          "faithfulness": 0.833,
+          "count": 3
+        }
+      },
+      "strategy": "hybrid",
+      "total_time_seconds": 199.8
+    }
+  }
+}
