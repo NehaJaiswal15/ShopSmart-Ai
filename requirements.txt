@@ -1,3 +1,9 @@
+# Core
+flask
+python-dotenv
+pandas
+
+# RAG Pipeline
 langchain
 langchain-astradb
 langchain-huggingface
@@ -5,7 +11,18 @@ langchain-groq
 langchain-community
 datasets
 pypdf
-python-dotenv
-pandas
-flask
+
+# ML / Sentiment Analysis
+scikit-learn
+joblib
+torch --index-url https://download.pytorch.org/whl/cpu
+transformers
+accelerate
+
+# Monitoring
 prometheus_client
+
+# EDA / Visualization
+matplotlib
+seaborn
+wordcloud
