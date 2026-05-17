@@ -1,0 +1,300 @@
+{
+  "timestamp": "20260517_214423",
+  "prompts_tested": [
+    "minimal",
+    "current",
+    "structured",
+    "expert"
+  ],
+  "winner": "structured",
+  "comparison": {
+    "minimal": {
+      "description": "Bare minimum — just says to use context",
+      "scores": {
+        "answer_correctness": 0.938,
+        "context_relevance": 0.812,
+        "faithfulness": 0.898
+      },
+      "avg_score": 0.883,
+      "latency": 4.6,
+      "by_category": {
+        "budget_query": {
+          "answer_correctness": 0.75,
+          "context_relevance": 0.5,
+          "faithfulness": 0.875,
+          "count": 2
+        },
+        "comparison": {
+          "answer_correctness": 1.0,
+          "context_relevance": 0.833,
+          "faithfulness": 1.0,
+          "count": 3
+        },
+        "feature_query": {
+          "answer_correctness": 1.0,
+          "context_relevance": 1.0,
+          "faithfulness": 0.9,
+          "count": 2
+        },
+        "general": {
+          "answer_correctness": 1.0,
+          "context_relevance": 1.0,
+          "faithfulness": 1.0,
+          "count": 1
+        },
+        "negative_query": {
+          "answer_correctness": 1.0,
+          "context_relevance": 1.0,
+          "faithfulness": 1.0,
+          "count": 1
+        },
+        "out_of_scope": {
+          "answer_correctness": 1.0,
+          "context_relevance": 1.0,
+          "faithfulness": 0.8,
+          "count": 2
+        },
+        "price_query": {
+          "answer_correctness": 0.667,
+          "context_relevance": 0.667,
+          "faithfulness": 1.0,
+          "count": 3
+        },
+        "quality_query": {
+          "answer_correctness": 1.0,
+          "context_relevance": 1.0,
+          "faithfulness": 0.84,
+          "count": 5
+        },
+        "rating_query": {
+          "answer_correctness": 1.0,
+          "context_relevance": 1.0,
+          "faithfulness": 0.8,
+          "count": 2
+        },
+        "recommendation": {
+          "answer_correctness": 1.0,
+          "context_relevance": 0.333,
+          "faithfulness": 0.867,
+          "count": 3
+        }
+      }
+    },
+    "current": {
+      "description": "Our current production prompt with anti-hallucination rules",
+      "scores": {
+        "answer_correctness": 0.96,
+        "context_relevance": 0.82,
+        "faithfulness": 0.874
+      },
+      "avg_score": 0.885,
+      "latency": 7.77,
+      "by_category": {
+        "budget_query": {
+          "answer_correctness": 1.0,
+          "context_relevance": 0.5,
+          "faithfulness": 0.875,
+          "count": 2
+        },
+        "comparison": {
+          "answer_correctness": 1.0,
+          "context_relevance": 0.833,
+          "faithfulness": 0.933,
+          "count": 3
+        },
+        "feature_query": {
+          "answer_correctness": 1.0,
+          "context_relevance": 1.0,
+          "faithfulness": 0.8,
+          "count": 2
+        },
+        "general": {
+          "answer_correctness": 1.0,
+          "context_relevance": 1.0,
+          "faithfulness": 1.0,
+          "count": 1
+        },
+        "negative_query": {
+          "answer_correctness": 1.0,
+          "context_relevance": 1.0,
+          "faithfulness": 0.9,
+          "count": 2
+        },
+        "out_of_scope": {
+          "answer_correctness": 1.0,
+          "context_relevance": 1.0,
+          "faithfulness": 0.8,
+          "count": 2
+        },
+        "price_query": {
+          "answer_correctness": 0.667,
+          "context_relevance": 0.667,
+          "faithfulness": 1.0,
+          "count": 3
+        },
+        "quality_query": {
+          "answer_correctness": 1.0,
+          "context_relevance": 1.0,
+          "faithfulness": 0.84,
+          "count": 5
+        },
+        "rating_query": {
+          "answer_correctness": 1.0,
+          "context_relevance": 1.0,
+          "faithfulness": 0.8,
+          "count": 2
+        },
+        "recommendation": {
+          "answer_correctness": 1.0,
+          "context_relevance": 0.333,
+          "faithfulness": 0.833,
+          "count": 3
+        }
+      }
+    },
+    "structured": {
+      "description": "Forces structured output with clear sections",
+      "scores": {
+        "answer_correctness": 0.96,
+        "context_relevance": 0.82,
+        "faithfulness": 0.893
+      },
+      "avg_score": 0.891,
+      "latency": 8.41,
+      "by_category": {
+        "budget_query": {
+          "answer_correctness": 1.0,
+          "context_relevance": 0.5,
+          "faithfulness": 0.875,
+          "count": 2
+        },
+        "comparison": {
+          "answer_correctness": 1.0,
+          "context_relevance": 0.833,
+          "faithfulness": 0.89,
+          "count": 3
+        },
+        "feature_query": {
+          "answer_correctness": 1.0,
+          "context_relevance": 1.0,
+          "faithfulness": 0.9,
+          "count": 2
+        },
+        "general": {
+          "answer_correctness": 1.0,
+          "context_relevance": 1.0,
+          "faithfulness": 1.0,
+          "count": 1
+        },
+        "negative_query": {
+          "answer_correctness": 1.0,
+          "context_relevance": 1.0,
+          "faithfulness": 0.9,
+          "count": 2
+        },
+        "out_of_scope": {
+          "answer_correctness": 1.0,
+          "context_relevance": 1.0,
+          "faithfulness": 0.8,
+          "count": 2
+        },
+        "price_query": {
+          "answer_correctness": 0.667,
+          "context_relevance": 0.667,
+          "faithfulness": 1.0,
+          "count": 3
+        },
+        "quality_query": {
+          "answer_correctness": 1.0,
+          "context_relevance": 1.0,
+          "faithfulness": 0.88,
+          "count": 5
+        },
+        "rating_query": {
+          "answer_correctness": 1.0,
+          "context_relevance": 1.0,
+          "faithfulness": 0.9,
+          "count": 2
+        },
+        "recommendation": {
+          "answer_correctness": 1.0,
+          "context_relevance": 0.333,
+          "faithfulness": 0.833,
+          "count": 3
+        }
+      }
+    },
+    "expert": {
+      "description": "Persona-driven prompt with expertise framing",
+      "scores": {
+        "answer_correctness": 0.94,
+        "context_relevance": 0.82,
+        "faithfulness": 0.91
+      },
+      "avg_score": 0.89,
+      "latency": 9.15,
+      "by_category": {
+        "budget_query": {
+          "answer_correctness": 0.75,
+          "context_relevance": 0.5,
+          "faithfulness": 0.875,
+          "count": 2
+        },
+        "comparison": {
+          "answer_correctness": 1.0,
+          "context_relevance": 0.833,
+          "faithfulness": 1.0,
+          "count": 3
+        },
+        "feature_query": {
+          "answer_correctness": 1.0,
+          "context_relevance": 1.0,
+          "faithfulness": 0.9,
+          "count": 2
+        },
+        "general": {
+          "answer_correctness": 1.0,
+          "context_relevance": 1.0,
+          "faithfulness": 1.0,
+          "count": 1
+        },
+        "negative_query": {
+          "answer_correctness": 1.0,
+          "context_relevance": 1.0,
+          "faithfulness": 0.9,
+          "count": 2
+        },
+        "out_of_scope": {
+          "answer_correctness": 1.0,
+          "context_relevance": 1.0,
+          "faithfulness": 0.8,
+          "count": 2
+        },
+        "price_query": {
+          "answer_correctness": 0.667,
+          "context_relevance": 0.667,
+          "faithfulness": 1.0,
+          "count": 3
+        },
+        "quality_query": {
+          "answer_correctness": 1.0,
+          "context_relevance": 1.0,
+          "faithfulness": 0.84,
+          "count": 5
+        },
+        "rating_query": {
+          "answer_correctness": 1.0,
+          "context_relevance": 1.0,
+          "faithfulness": 0.8,
+          "count": 2
+        },
+        "recommendation": {
+          "answer_correctness": 1.0,
+          "context_relevance": 0.333,
+          "faithfulness": 1.0,
+          "count": 3
+        }
+      }
+    }
+  }
+}
