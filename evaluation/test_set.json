@@ -1,0 +1,181 @@
+{
+  "version": "1.0",
+  "description": "Golden test set for RAG evaluation. Each entry has a user question, expected answer context, and the source product(s) the answer should reference.",
+  "test_cases": [
+    {
+      "id": "price_01",
+      "question": "What is the price of BoAt Rockerz 235v2?",
+      "expected_answer_contains": ["999"],
+      "expected_products": ["BoAt Rockerz 235v2"],
+      "category": "price_query"
+    },
+    {
+      "id": "price_02",
+      "question": "How much does the OnePlus Bullets Wireless Z cost?",
+      "expected_answer_contains": ["1999"],
+      "expected_products": ["OnePlus Bullets Wireless Z Bluetooth Headset"],
+      "category": "price_query"
+    },
+    {
+      "id": "price_03",
+      "question": "What is the cheapest headset available?",
+      "expected_answer_contains": ["449", "BassHeads"],
+      "expected_products": ["BoAt BassHeads 100 Wired Headset"],
+      "category": "price_query"
+    },
+    {
+      "id": "compare_01",
+      "question": "Compare BoAt Rockerz 235v2 and realme Buds Wireless",
+      "expected_answer_contains": ["Rockerz", "realme"],
+      "expected_products": ["BoAt Rockerz 235v2", "realme Buds Wireless Bluetooth Headset"],
+      "category": "comparison"
+    },
+    {
+      "id": "compare_02",
+      "question": "Which is better, OnePlus Bullets Z or OnePlus Bullets Z Bass Edition?",
+      "expected_answer_contains": ["Bullets", "Bass Edition"],
+      "expected_products": ["OnePlus Bullets Wireless Z Bluetooth Headset", "OnePlus Bullets Wireless Z Bass Edition Bluetooth Headset"],
+      "category": "comparison"
+    },
+    {
+      "id": "recommend_01",
+      "question": "Suggest a good Bluetooth headset under 1000 rupees",
+      "expected_answer_contains": ["Rockerz", "999"],
+      "expected_products": ["BoAt Rockerz 235v2", "U&I Titanic Series"],
+      "category": "recommendation"
+    },
+    {
+      "id": "recommend_02",
+      "question": "Which wireless earbuds should I buy?",
+      "expected_answer_contains": [],
+      "expected_products": ["BoAt Airdopes 131 Bluetooth Headset", "realme Buds Q Bluetooth Headset"],
+      "category": "recommendation"
+    },
+    {
+      "id": "recommend_03",
+      "question": "I want a wired headset with good bass, what do you recommend?",
+      "expected_answer_contains": ["BassHeads", "wired"],
+      "expected_products": ["BoAt BassHeads 100 Wired Headset", "realme Buds 2 Wired Headset"],
+      "category": "recommendation"
+    },
+    {
+      "id": "quality_01",
+      "question": "How is the sound quality of BoAt Airdopes 131?",
+      "expected_answer_contains": ["sound", "Airdopes"],
+      "expected_products": ["BoAt Airdopes 131 Bluetooth Headset"],
+      "category": "quality_query"
+    },
+    {
+      "id": "quality_02",
+      "question": "Is the realme Buds 2 comfortable to wear?",
+      "expected_answer_contains": ["realme", "Buds 2"],
+      "expected_products": ["realme Buds 2 Wired Headset"],
+      "category": "quality_query"
+    },
+    {
+      "id": "quality_03",
+      "question": "How is the battery life of BoAt Rockerz 235v2?",
+      "expected_answer_contains": ["battery", "Rockerz"],
+      "expected_products": ["BoAt Rockerz 235v2"],
+      "category": "quality_query"
+    },
+    {
+      "id": "quality_04",
+      "question": "Does the U&I Titanic neckband have good build quality?",
+      "expected_answer_contains": ["Titanic"],
+      "expected_products": ["U&I Titanic Series - Low Price Bluetooth Neckband Bluetooth Headset"],
+      "category": "quality_query"
+    },
+    {
+      "id": "quality_05",
+      "question": "What are the reviews saying about realme Buds Q?",
+      "expected_answer_contains": ["realme", "Buds Q"],
+      "expected_products": ["realme Buds Q Bluetooth Headset"],
+      "category": "quality_query"
+    },
+    {
+      "id": "negative_01",
+      "question": "Are there any complaints about OnePlus Bullets Wireless Z?",
+      "expected_answer_contains": ["OnePlus", "Bullets"],
+      "expected_products": ["OnePlus Bullets Wireless Z Bluetooth Headset"],
+      "category": "negative_query"
+    },
+    {
+      "id": "negative_02",
+      "question": "What are the downsides of BoAt BassHeads 100?",
+      "expected_answer_contains": ["BassHeads"],
+      "expected_products": ["BoAt BassHeads 100 Wired Headset"],
+      "category": "negative_query"
+    },
+    {
+      "id": "feature_01",
+      "question": "Which headsets have ASAP charging?",
+      "expected_answer_contains": ["Rockerz", "ASAP"],
+      "expected_products": ["BoAt Rockerz 235v2"],
+      "category": "feature_query"
+    },
+    {
+      "id": "feature_02",
+      "question": "Which headsets support Bluetooth 5.0?",
+      "expected_answer_contains": ["Bluetooth"],
+      "expected_products": [],
+      "category": "feature_query"
+    },
+    {
+      "id": "budget_01",
+      "question": "What is the best headset under 500 rupees?",
+      "expected_answer_contains": ["449", "BassHeads"],
+      "expected_products": ["BoAt BassHeads 100 Wired Headset", "U&I Titanic Series"],
+      "category": "budget_query"
+    },
+    {
+      "id": "budget_02",
+      "question": "Which headsets are available between 1000 and 2000 rupees?",
+      "expected_answer_contains": [],
+      "expected_products": ["realme Buds Wireless Bluetooth Headset", "BoAt Airdopes 131 Bluetooth Headset", "OnePlus Bullets Wireless Z Bluetooth Headset", "realme Buds Q Bluetooth Headset"],
+      "category": "budget_query"
+    },
+    {
+      "id": "general_01",
+      "question": "What products do you have information about?",
+      "expected_answer_contains": [],
+      "expected_products": [],
+      "category": "general"
+    },
+    {
+      "id": "outofscope_01",
+      "question": "Can you recommend a good laptop?",
+      "expected_answer_contains": [],
+      "expected_products": [],
+      "category": "out_of_scope"
+    },
+    {
+      "id": "outofscope_02",
+      "question": "What is the weather today?",
+      "expected_answer_contains": [],
+      "expected_products": [],
+      "category": "out_of_scope"
+    },
+    {
+      "id": "rating_01",
+      "question": "Which product has the highest rating?",
+      "expected_answer_contains": [],
+      "expected_products": [],
+      "category": "rating_query"
+    },
+    {
+      "id": "rating_02",
+      "question": "What is the average rating for BoAt Rockerz 235v2?",
+      "expected_answer_contains": ["Rockerz", "rating"],
+      "expected_products": ["BoAt Rockerz 235v2"],
+      "category": "rating_query"
+    },
+    {
+      "id": "versus_01",
+      "question": "BoAt vs realme, which brand is better for earphones?",
+      "expected_answer_contains": ["BoAt", "realme"],
+      "expected_products": [],
+      "category": "comparison"
+    }
+  ]
+}
