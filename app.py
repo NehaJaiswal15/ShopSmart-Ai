@@ -12,6 +12,27 @@ load_dotenv()
 logger = get_logger(__name__)
 REQUEST_COUNT = Counter("http_requests_total", "Total HTTP Request")
 
+# Product-related keywords — sentiment only shows for these queries
+PRODUCT_KEYWORDS = [
+    "product", "headset", "headphone", "earphone", "earbuds", "buds",
+    "boat", "realme", "oneplus", "bass", "wireless", "bluetooth",
+    "price", "cost", "worth", "buy", "purchase", "recommend",
+    "review", "rating", "quality", "sound", "battery", "compare",
+    "best", "worst", "cheap", "expensive", "budget", "neckband",
+    "airdopes", "rockerz", "bullets", "titanic", "wired",
+]
+
+
+def _is_product_related(user_input: str, answer: str) -> bool:
+    """Check if the conversation is about products (not greetings/small talk).
+    
+    Returns True only when the user query or bot response contains
+    product-related keywords, so sentiment badges don't appear
+    on greetings like 'hello' or 'how are you'.
+    """
+    combined = (user_input + " " + answer).lower()
+    return any(kw in combined for kw in PRODUCT_KEYWORDS)
+
 
 def create_app():
     app = Flask(__name__)
@@ -45,31 +66,39 @@ def create_app():
         )
         answer = result["answer"]
 
-        # Enrich with sentiment analysis of retrieved context
-        if sentiment_predictor and "context" in result:
+        # Only enrich with sentiment when the response is product-related
+        # Skip for greetings, small talk, and non-product queries
+        is_product_query = (
+            sentiment_predictor
+            and "context" in result
+            and result["context"]
+            and _is_product_related(user_input, answer)
+        )
+
+        if is_product_query:
             try:
                 docs = result["context"]
-                if docs:
-                    # Extract review text from retrieved documents
-                    reviews = [doc.page_content for doc in docs]
-                    predictions = sentiment_predictor.predict_batch(reviews)
+                reviews = [doc.page_content for doc in docs]
+                predictions = sentiment_predictor.predict_batch(reviews)
 
-                    # Summarize sentiment
-                    sentiment_counts = {}
-                    for p in predictions:
-                        label = p["label"]
-                        sentiment_counts[label] = sentiment_counts.get(label, 0) + 1
+                # Summarize sentiment
+                sentiment_counts = {}
+                for p in predictions:
+                    label = p["label"]
+                    sentiment_counts[label] = sentiment_counts.get(label, 0) + 1
 
-                    summary_parts = []
-                    for label in ["Positive", "Neutral", "Negative"]:
-                        count = sentiment_counts.get(label, 0)
-                        if count > 0:
-                            emoji = {"Positive": "😊", "Neutral": "😐", "Negative": "😞"}[label]
-                            summary_parts.append(f"{emoji} {label}: {count}")
+                # Only show if there's a mix of sentiments (more interesting)
+                # or if there are negative reviews worth highlighting
+                summary_parts = []
+                for label in ["Positive", "Neutral", "Negative"]:
+                    count = sentiment_counts.get(label, 0)
+                    if count > 0:
+                        emoji = {"Positive": "😊", "Neutral": "😐", "Negative": "😞"}[label]
+                        summary_parts.append(f"{emoji} {label}: {count}")
 
-                    if summary_parts:
-                        sentiment_line = "\n\n📊 **Review Sentiment:** " + " | ".join(summary_parts)
-                        answer += sentiment_line
+                if summary_parts:
+                    sentiment_line = "\n\n📊 Review Sentiment: " + " | ".join(summary_parts)
+                    answer += sentiment_line
             except Exception as e:
                 logger.error(f"Sentiment analysis failed: {e}")
 
@@ -101,4 +130,5 @@ def create_app():
 
 if __name__ == "__main__":
     app = create_app()
-    app.run(host="0.0.0.0", port=5000, debug=True)
+    print("\n✅ ShopSmart AI is ready! Open http://localhost:5000 in your browser.\n")
+    app.run(host="0.0.0.0", port=5000, debug=True, use_reloader=False)
