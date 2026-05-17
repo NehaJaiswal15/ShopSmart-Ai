@@ -11,6 +11,7 @@ langchain-groq
 langchain-community
 datasets
 pypdf
+rank_bm25
 
 # ML / Sentiment Analysis
 scikit-learn
