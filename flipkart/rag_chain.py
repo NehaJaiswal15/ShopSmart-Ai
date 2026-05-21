@@ -8,6 +8,7 @@ from langchain_core.chat_history import BaseChatMessageHistory
 from flipkart.config import Config
 from flipkart.retrieval import get_retriever
 
+
 class RAGChainBuilder:
     def __init__(self, vector_store, retrieval_strategy: str = "hybrid"):
         self.vector_store = vector_store
@@ -21,16 +22,21 @@ class RAGChainBuilder:
         return self.history_store[session_id]
 
     def build_chain(self):
-        retriever = get_retriever(self.vector_store, strategy=self.retrieval_strategy, k=3) 
+        retriever = get_retriever(self.vector_store, strategy=self.retrieval_strategy, k=3)
 
-        context_prompt = ChatPromptTemplate.from_messages([
-            ("system", "Given the chat history and user question, rewrite it as a standalone question."),
-            MessagesPlaceholder(variable_name="chat_history"),
-            ("human", "{input}")
-        ])
+        context_prompt = ChatPromptTemplate.from_messages(
+            [
+                ("system", "Given the chat history and user question, rewrite it as a standalone question."),
+                MessagesPlaceholder(variable_name="chat_history"),
+                ("human", "{input}"),
+            ]
+        )
 
-        qa_prompt = ChatPromptTemplate.from_messages([
-            ("system", """You are ShopSmart AI, a product recommendation assistant.
+        qa_prompt = ChatPromptTemplate.from_messages(
+            [
+                (
+                    "system",
+                    """You are ShopSmart AI, a product recommendation assistant.
 
 INSTRUCTIONS:
 1. Answer ONLY using the product information provided in CONTEXT below.
@@ -43,27 +49,23 @@ INSTRUCTIONS:
 CONTEXT:
 {context}
 
-QUESTION: {input}"""),
-            MessagesPlaceholder(variable_name="chat_history"),
-            ("human", "{input}")
-        ])
-
-        history_aware_retriever = create_history_aware_retriever(
-            self.model, retriever, context_prompt
+QUESTION: {input}""",
+                ),
+                MessagesPlaceholder(variable_name="chat_history"),
+                ("human", "{input}"),
+            ]
         )
 
-        question_answer_chain = create_stuff_documents_chain(
-            self.model, qa_prompt
-        )
+        history_aware_retriever = create_history_aware_retriever(self.model, retriever, context_prompt)
 
-        rag_chain = create_retrieval_chain(
-            history_aware_retriever, question_answer_chain
-        )
+        question_answer_chain = create_stuff_documents_chain(self.model, qa_prompt)
+
+        rag_chain = create_retrieval_chain(history_aware_retriever, question_answer_chain)
 
         return RunnableWithMessageHistory(
-            rag_chain, 
+            rag_chain,
             self._get_history,
             input_messages_key="input",
             history_messages_key="chat_history",
-            output_messages_key="answer"
+            output_messages_key="answer",
         )

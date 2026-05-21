@@ -16,7 +16,8 @@ rank_bm25
 # ML / Sentiment Analysis
 scikit-learn
 joblib
-torch --index-url https://download.pytorch.org/whl/cpu
+--extra-index-url https://download.pytorch.org/whl/cpu
+torch
 transformers
 accelerate
 
@@ -27,3 +28,9 @@ prometheus_client
 matplotlib
 seaborn
 wordcloud
+
+# MLOps & Quality (Phase 3)
+mlflow>=2.10.0
+pydantic>=2.0.0
+pydantic-settings>=2.0.0
+ruff>=0.1.0

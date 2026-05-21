@@ -4,6 +4,7 @@ Handles data ingestion into the AstraDB vector store.
 Connects to AstraDB, loads and preprocesses documents,
 and uploads them with embeddings.
 """
+
 import time
 from langchain_astradb import AstraDBVectorStore
 from langchain_huggingface import HuggingFaceEndpointEmbeddings
@@ -29,7 +30,7 @@ class DataIngestor:
             collection_name=COLLECTION_NAME,
             api_endpoint=Config.ASTRA_DB_API_ENDPOINT,
             token=Config.ASTRA_DB_APPLICATION_TOKEN,
-            namespace=Config.ASTRA_DB_KEYSPACE
+            namespace=Config.ASTRA_DB_KEYSPACE,
         )
         logger.info("AstraDB connection established")
 
@@ -57,10 +58,7 @@ class DataIngestor:
             self.vstore.add_documents(docs)
 
             elapsed = time.time() - start_time
-            logger.info(
-                f"Ingestion complete: {len(docs)} documents uploaded "
-                f"in {elapsed:.1f} seconds"
-            )
+            logger.info(f"Ingestion complete: {len(docs)} documents uploaded in {elapsed:.1f} seconds")
         except Exception as e:
             logger.error(f"Ingestion failed: {e}")
             raise CustomException("Data ingestion failed", e)

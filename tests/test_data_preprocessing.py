@@ -10,6 +10,7 @@ Tests cover:
 Run:
     python -m pytest tests/test_data_preprocessing.py -v
 """
+
 import pytest
 import pandas as pd
 from flipkart.data_preprocessing import clean_text, is_valid_review, validate_dataframe_schema
@@ -19,6 +20,7 @@ REQUIRED_COLUMNS = ["product_title", "rating", "summary", "review"]
 
 
 # ── clean_text Tests ───────────────────────────────────────────
+
 
 class TestCleanText:
     """Tests for the clean_text function."""
@@ -74,6 +76,7 @@ class TestCleanText:
 
 # ── is_valid_review Tests ──────────────────────────────────────
 
+
 class TestIsValidReview:
     """Tests for the is_valid_review function."""
 
@@ -109,26 +112,31 @@ class TestIsValidReview:
 
 # ── validate_dataframe_schema Tests ────────────────────────────
 
+
 class TestValidateSchema:
     """Tests for the validate_dataframe_schema function."""
 
     def test_valid_schema(self):
         """DataFrame with all required columns should not raise."""
-        df = pd.DataFrame({
-            "product_title": ["Product A"],
-            "rating": [4],
-            "summary": ["Good"],
-            "review": ["This is a good product"],
-        })
+        df = pd.DataFrame(
+            {
+                "product_title": ["Product A"],
+                "rating": [4],
+                "summary": ["Good"],
+                "review": ["This is a good product"],
+            }
+        )
         # Should not raise
         validate_dataframe_schema(df, REQUIRED_COLUMNS)
 
     def test_missing_column_raises(self):
         """DataFrame missing a required column should raise ValueError."""
-        df = pd.DataFrame({
-            "product_title": ["Product A"],
-            "rating": [4],
-        })
+        df = pd.DataFrame(
+            {
+                "product_title": ["Product A"],
+                "rating": [4],
+            }
+        )
         with pytest.raises(ValueError, match="missing required columns"):
             validate_dataframe_schema(df, REQUIRED_COLUMNS)
 
@@ -139,17 +147,20 @@ class TestValidateSchema:
 
     def test_extra_columns_ok(self):
         """Extra columns beyond required should still pass."""
-        df = pd.DataFrame({
-            "product_title": ["Product A"],
-            "rating": [4],
-            "summary": ["Good"],
-            "review": ["This is a good product"],
-            "extra_col": ["extra data"],
-        })
+        df = pd.DataFrame(
+            {
+                "product_title": ["Product A"],
+                "rating": [4],
+                "summary": ["Good"],
+                "review": ["This is a good product"],
+                "extra_col": ["extra data"],
+            }
+        )
         validate_dataframe_schema(df, REQUIRED_COLUMNS)
 
 
 # ── Integration Tests ──────────────────────────────────────────
+
 
 class TestIntegration:
     """End-to-end tests combining clean_text and is_valid_review."""

@@ -12,11 +12,12 @@ Uses the TF-IDF + Logistic Regression baseline (not DistilBERT) because:
 
 Usage:
     from ml.sentiment.inference import SentimentPredictor
-    
+
     predictor = SentimentPredictor()
     result = predictor.predict("Great sound quality!")
     # {'label': 'Positive', 'confidence': 0.85, 'emoji': '😊'}
 """
+
 import os
 import joblib
 from flipkart.data_preprocessing import clean_text
@@ -39,10 +40,10 @@ class SentimentPredictor:
 
     def __init__(self, model_dir: str = MODEL_DIR):
         """Load the trained model and vectorizer from disk.
-        
+
         Args:
             model_dir: Path to directory containing model files.
-        
+
         Raises:
             FileNotFoundError: If model files don't exist (need to train first).
         """
@@ -51,8 +52,7 @@ class SentimentPredictor:
 
         if not os.path.exists(model_path):
             raise FileNotFoundError(
-                f"Model not found at {model_path}. "
-                f"Run 'python -m ml.sentiment.train_baseline' first."
+                f"Model not found at {model_path}. Run 'python -m ml.sentiment.train_baseline' first."
             )
 
         self.model = joblib.load(model_path)
@@ -61,10 +61,10 @@ class SentimentPredictor:
 
     def predict(self, text: str) -> dict:
         """Predict sentiment of a single review text.
-        
+
         Args:
             text: Raw review text (will be cleaned automatically).
-        
+
         Returns:
             dict with keys:
                 - label: 'Positive', 'Neutral', or 'Negative'
@@ -73,7 +73,7 @@ class SentimentPredictor:
         """
         cleaned = clean_text(text)
         features = self.tfidf.transform([cleaned])
-        
+
         label = self.model.predict(features)[0]
         probabilities = self.model.predict_proba(features)[0]
         confidence = max(probabilities)
@@ -86,16 +86,16 @@ class SentimentPredictor:
 
     def predict_batch(self, texts: list) -> list:
         """Predict sentiment for multiple reviews at once.
-        
+
         Args:
             texts: List of raw review texts.
-        
+
         Returns:
             List of prediction dicts.
         """
         cleaned = [clean_text(t) for t in texts]
         features = self.tfidf.transform(cleaned)
-        
+
         labels = self.model.predict(features)
         probabilities = self.model.predict_proba(features)
 

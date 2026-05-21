@@ -4,6 +4,7 @@ for ingestion into the vector store.
 
 Applies text preprocessing and validation to ensure data quality.
 """
+
 import os
 import pandas as pd
 from langchain_core.documents import Document
@@ -18,9 +19,7 @@ REQUIRED_COLUMNS = ["product_title", "rating", "summary", "review"]
 class DataConverter:
     def __init__(self, file_path: str, price_file: str = None):
         self.file_path = file_path
-        self.price_file = price_file or os.path.join(
-            os.path.dirname(file_path), "product_prices.csv"
-        )
+        self.price_file = price_file or os.path.join(os.path.dirname(file_path), "product_prices.csv")
 
     def _load_prices(self):
         """Load product prices from the price CSV into a lookup dict."""
@@ -34,7 +33,7 @@ class DataConverter:
 
     def convert(self):
         """Convert CSV data to cleaned, validated LangChain Documents.
-        
+
         Pipeline:
             1. Load CSV and validate schema
             2. Drop rows with NaN reviews
@@ -42,7 +41,7 @@ class DataConverter:
             4. Filter out invalid reviews (too short, gibberish)
             5. Merge price data
             6. Build Document objects with rich metadata
-        
+
         Returns:
             List of LangChain Document objects.
         """
@@ -92,17 +91,14 @@ class DataConverter:
                 f"Review: {row['review']}"
             )
 
-            docs.append(Document(
-                page_content=content,
-                metadata={
-                    "product_name": product,
-                    "price": price,
-                    "rating": int(row["rating"])
-                }
-            ))
+            docs.append(
+                Document(
+                    page_content=content,
+                    metadata={"product_name": product, "price": price, "rating": int(row["rating"])},
+                )
+            )
 
         logger.info(
-            f"Conversion complete: {total_rows} rows -> {len(docs)} documents "
-            f"(dropped {total_rows - len(docs)} rows)"
+            f"Conversion complete: {total_rows} rows -> {len(docs)} documents (dropped {total_rows - len(docs)} rows)"
         )
-        return docs
+        return docs

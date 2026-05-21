@@ -1,0 +1,19 @@
+[tool.ruff]
+# Target Python version
+target-version = "py310"
+line-length = 120
+
+[tool.ruff.lint]
+# Enable Pyflakes (F), pycodestyle (E, W)
+select = ["E", "F", "W"]
+
+# Ignore E402 (module level import not at top of file)
+# Ignore E501 (line too long) to allow flexibility in logging, comments, and strings
+ignore = [
+    "E402",
+    "E501",
+]
+
+[tool.ruff.lint.per-file-ignores]
+# Ignore notebooks and specific files from strict rules
+"notebooks/*" = ["F541", "F401"]

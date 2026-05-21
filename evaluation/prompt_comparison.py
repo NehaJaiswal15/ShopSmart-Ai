@@ -14,6 +14,7 @@ Usage:
 
 Note: Takes ~15-20 minutes (runs evaluation once per prompt variant).
 """
+
 import os
 import sys
 import json
@@ -49,9 +50,8 @@ PROMPTS = {
 CONTEXT:
 {context}
 
-QUESTION: {input}"""
+QUESTION: {input}""",
     },
-
     "current": {
         "description": "Our current production prompt with anti-hallucination rules",
         "template": """You are ShopSmart AI, an e-commerce assistant that helps users with product-related queries.
@@ -68,9 +68,8 @@ Rules:
 CONTEXT:
 {context}
 
-QUESTION: {input}"""
+QUESTION: {input}""",
     },
-
     "structured": {
         "description": "Forces structured output with clear sections",
         "template": """You are ShopSmart AI, a product recommendation assistant.
@@ -86,9 +85,8 @@ INSTRUCTIONS:
 CONTEXT:
 {context}
 
-QUESTION: {input}"""
+QUESTION: {input}""",
     },
-
     "expert": {
         "description": "Persona-driven prompt with expertise framing",
         "template": """You are ShopSmart AI, an expert audio product advisor with deep knowledge of headphones, earbuds, and neckbands.
@@ -106,12 +104,13 @@ IMPORTANT RULES:
 CONTEXT:
 {context}
 
-QUESTION: {input}"""
+QUESTION: {input}""",
     },
 }
 
 
 # ── Build Chain with Custom Prompt ─────────────────────────────
+
 
 def build_chain_with_prompt(vector_store, prompt_template: str):
     """Build a RAG chain using a specific system prompt."""
@@ -124,17 +123,17 @@ def build_chain_with_prompt(vector_store, prompt_template: str):
             history_store[session_id] = ChatMessageHistory()
         return history_store[session_id]
 
-    context_prompt = ChatPromptTemplate.from_messages([
-        ("system", "Given the chat history and user question, rewrite it as a standalone question."),
-        MessagesPlaceholder(variable_name="chat_history"),
-        ("human", "{input}")
-    ])
+    context_prompt = ChatPromptTemplate.from_messages(
+        [
+            ("system", "Given the chat history and user question, rewrite it as a standalone question."),
+            MessagesPlaceholder(variable_name="chat_history"),
+            ("human", "{input}"),
+        ]
+    )
 
-    qa_prompt = ChatPromptTemplate.from_messages([
-        ("system", prompt_template),
-        MessagesPlaceholder(variable_name="chat_history"),
-        ("human", "{input}")
-    ])
+    qa_prompt = ChatPromptTemplate.from_messages(
+        [("system", prompt_template), MessagesPlaceholder(variable_name="chat_history"), ("human", "{input}")]
+    )
 
     history_aware_retriever = create_history_aware_retriever(model, retriever, context_prompt)
     question_answer_chain = create_stuff_documents_chain(model, qa_prompt)
@@ -145,11 +144,12 @@ def build_chain_with_prompt(vector_store, prompt_template: str):
         get_history,
         input_messages_key="input",
         history_messages_key="chat_history",
-        output_messages_key="answer"
+        output_messages_key="answer",
     )
 
 
 # ── Main ───────────────────────────────────────────────────────
+
 
 def main():
     print("=" * 70)
@@ -196,19 +196,21 @@ def main():
         scores = all_results[name]["aggregate"]["avg_scores"]
         latency = all_results[name]["aggregate"]["avg_latency_seconds"]
         avg = sum(scores.values()) / len(scores)
-
-        marker = ""
         if avg > best_avg:
             best_avg = avg
             best_prompt = name
 
-        print(f"  {name:<15} {scores['answer_correctness']:>12.3f} {scores['context_relevance']:>10.3f} {scores['faithfulness']:>9.3f} {avg:>8.3f} {latency:>8.1f}s")
+        print(
+            f"  {name:<15} {scores['answer_correctness']:>12.3f} {scores['context_relevance']:>10.3f} {scores['faithfulness']:>9.3f} {avg:>8.3f} {latency:>8.1f}s"
+        )
 
     # Mark the winner
     print(f"\n  ✅ Best prompt: {best_prompt.upper()} (avg score: {best_avg:.3f})")
 
     # Per-category comparison for top 2 prompts
-    sorted_prompts = sorted(PROMPTS.keys(), key=lambda p: sum(all_results[p]["aggregate"]["avg_scores"].values()), reverse=True)
+    sorted_prompts = sorted(
+        PROMPTS.keys(), key=lambda p: sum(all_results[p]["aggregate"]["avg_scores"].values()), reverse=True
+    )
     top2 = sorted_prompts[:2]
 
     print(f"\n  Category Breakdown ({top2[0]} vs {top2[1]}):")
@@ -245,7 +247,7 @@ def main():
                 "by_category": all_results[name]["aggregate"]["scores_by_category"],
             }
             for name in PROMPTS
-        }
+        },
     }
 
     with open(filepath, "w", encoding="utf-8") as f:

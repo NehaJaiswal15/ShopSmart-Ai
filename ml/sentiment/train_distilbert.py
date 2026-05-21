@@ -13,6 +13,7 @@ Why DistilBERT?
 Usage:
     python -m ml.sentiment.train_distilbert
 """
+
 import os
 import json
 import time
@@ -30,6 +31,8 @@ from transformers import (
 )
 
 from flipkart.data_preprocessing import clean_text
+import mlflow
+from ml.experiment_tracking import get_or_create_experiment
 
 
 # ── Configuration ──────────────────────────────────────────────
@@ -41,9 +44,9 @@ RANDOM_STATE = 42
 
 # Training hyperparameters (tuned for small dataset + CPU)
 NUM_EPOCHS = 3
-BATCH_SIZE = 8          # Small batch for CPU memory
-LEARNING_RATE = 2e-5    # Standard for fine-tuning transformers
-MAX_LENGTH = 128        # Max token length (reviews are short)
+BATCH_SIZE = 8  # Small batch for CPU memory
+LEARNING_RATE = 2e-5  # Standard for fine-tuning transformers
+MAX_LENGTH = 128  # Max token length (reviews are short)
 
 LABEL_MAP = {"Negative": 0, "Neutral": 1, "Positive": 2}
 LABEL_NAMES = ["Negative", "Neutral", "Positive"]
@@ -52,19 +55,20 @@ LABEL_NAMES = ["Negative", "Neutral", "Positive"]
 # ── Dataset Class ──────────────────────────────────────────────
 class ReviewDataset(Dataset):
     """PyTorch Dataset for tokenized reviews.
-    
+
     Converts raw text + labels into the format DistilBERT expects:
     - input_ids: tokenized text as integer IDs
     - attention_mask: 1 for real tokens, 0 for padding
     - labels: integer class labels
     """
+
     def __init__(self, texts, labels, tokenizer, max_length=128):
         self.encodings = tokenizer(
-            texts, 
-            truncation=True, 
-            padding=True, 
+            texts,
+            truncation=True,
+            padding=True,
             max_length=max_length,
-            return_tensors=None  # Return lists, not tensors
+            return_tensors=None,  # Return lists, not tensors
         )
         self.labels = labels
 
@@ -91,7 +95,7 @@ def rating_to_sentiment(rating):
 
 def compute_class_weights(labels):
     """Compute class weights inversely proportional to frequency.
-    
+
     Same idea as sklearn's class_weight='balanced'.
     Gives more importance to rare classes during training.
     """
@@ -113,11 +117,12 @@ def compute_metrics(eval_pred):
 # ── Custom Trainer with Class Weights ──────────────────────────
 class WeightedTrainer(Trainer):
     """Custom Trainer that applies class weights to the loss function.
-    
+
     Without this, the model would optimize for accuracy and just
     predict 'Positive' for everything (since it's 87% of the data).
     Class weights force the model to pay attention to rare classes.
     """
+
     def __init__(self, class_weights=None, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.class_weights = class_weights
@@ -126,13 +131,13 @@ class WeightedTrainer(Trainer):
         labels = inputs.pop("labels")
         outputs = model(**inputs)
         logits = outputs.logits
-        
+
         if self.class_weights is not None:
             weight = self.class_weights.to(logits.device)
             loss_fn = torch.nn.CrossEntropyLoss(weight=weight)
         else:
             loss_fn = torch.nn.CrossEntropyLoss()
-        
+
         loss = loss_fn(logits, labels)
         return (loss, outputs) if return_outputs else loss
 
@@ -142,7 +147,7 @@ def main():
     print("=" * 60)
     print("Fine-tuning DistilBERT for Sentiment Analysis")
     print("=" * 60)
-    
+
     # Load and prepare data
     print("\n[1/5] Loading data...")
     df = pd.read_csv(DATA_PATH)
@@ -150,42 +155,40 @@ def main():
     df = df[df["review_clean"].str.len() > 10]
     df["sentiment"] = df["rating"].apply(rating_to_sentiment)
     df["label"] = df["sentiment"].map(LABEL_MAP)
-    
+
     X = df["review_clean"].tolist()
     y = df["label"].tolist()
-    
+
     print(f"  Samples: {len(X)}")
     for name, idx in LABEL_MAP.items():
         count = y.count(idx)
-        print(f"    {name}: {count} ({count/len(y)*100:.1f}%)")
-    
+        print(f"    {name}: {count} ({count / len(y) * 100:.1f}%)")
+
     # Split
     X_train, X_test, y_train, y_test = train_test_split(
         X, y, test_size=TEST_SIZE, random_state=RANDOM_STATE, stratify=y
     )
     print(f"\n  Train: {len(X_train)} | Test: {len(X_test)}")
-    
+
     # Compute class weights
     class_weights = compute_class_weights(np.array(y_train))
     print(f"  Class weights: {dict(zip(LABEL_NAMES, class_weights.numpy().round(2)))}")
-    
+
     # Tokenize
     print("\n[2/5] Tokenizing reviews...")
     tokenizer = DistilBertTokenizer.from_pretrained(MODEL_NAME)
     train_dataset = ReviewDataset(X_train, y_train, tokenizer, MAX_LENGTH)
     test_dataset = ReviewDataset(X_test, y_test, tokenizer, MAX_LENGTH)
     print(f"  Max token length: {MAX_LENGTH}")
-    
+
     # Load model
     print("\n[3/5] Loading pre-trained DistilBERT...")
-    model = DistilBertForSequenceClassification.from_pretrained(
-        MODEL_NAME, num_labels=len(LABEL_NAMES)
-    )
+    model = DistilBertForSequenceClassification.from_pretrained(MODEL_NAME, num_labels=len(LABEL_NAMES))
     total_params = sum(p.numel() for p in model.parameters())
     trainable_params = sum(p.numel() for p in model.parameters() if p.requires_grad)
     print(f"  Total parameters: {total_params:,}")
     print(f"  Trainable parameters: {trainable_params:,}")
-    
+
     # Training arguments
     training_args = TrainingArguments(
         output_dir="ml/sentiment/checkpoints",
@@ -199,15 +202,28 @@ def main():
         load_best_model_at_end=True,
         metric_for_best_model="f1_macro",
         logging_steps=10,
-        report_to="none",       # No W&B/MLflow for now
-        use_cpu=True,           # Force CPU
+        report_to="none",  # No W&B/MLflow for now
+        use_cpu=True,  # Force CPU
     )
-    
+
+    # Log parameters to MLflow if run is active
+    if mlflow.active_run():
+        mlflow.log_params(
+            {
+                "model_type": "DistilBERT Fine-Tuned",
+                "epochs": NUM_EPOCHS,
+                "batch_size": BATCH_SIZE,
+                "learning_rate": LEARNING_RATE,
+                "max_length": MAX_LENGTH,
+                "model_name": MODEL_NAME,
+            }
+        )
+
     # Train
     print(f"\n[4/5] Training ({NUM_EPOCHS} epochs, batch_size={BATCH_SIZE})...")
     print("  This will take ~15-20 minutes on CPU. Be patient!")
     start_time = time.time()
-    
+
     trainer = WeightedTrainer(
         class_weights=class_weights,
         model=model,
@@ -216,42 +232,42 @@ def main():
         eval_dataset=test_dataset,
         compute_metrics=compute_metrics,
     )
-    
+
     trainer.train()
     elapsed = time.time() - start_time
-    print(f"\n  Training completed in {elapsed/60:.1f} minutes")
-    
+    print(f"\n  Training completed in {elapsed / 60:.1f} minutes")
+
     # Evaluate
     print("\n[5/5] Evaluating...")
     predictions = trainer.predict(test_dataset)
     y_pred = np.argmax(predictions.predictions, axis=-1)
-    
+
     accuracy = accuracy_score(y_test, y_pred)
     f1_macro = f1_score(y_test, y_pred, average="macro")
     f1_weighted = f1_score(y_test, y_pred, average="weighted")
-    
+
     print("\n" + "=" * 60)
     print("RESULTS: Fine-tuned DistilBERT")
     print("=" * 60)
     print(f"\n  Accuracy:          {accuracy:.4f}")
     print(f"  F1 (macro):        {f1_macro:.4f}")
     print(f"  F1 (weighted):     {f1_weighted:.4f}")
-    
-    print(f"\nClassification Report:")
+
+    print("\nClassification Report:")
     print(classification_report(y_test, y_pred, target_names=LABEL_NAMES))
-    
-    print(f"Confusion Matrix:")
+
+    print("Confusion Matrix:")
     cm = confusion_matrix(y_test, y_pred)
     print(f"{'':>12} {'Neg(pred)':>10} {'Neu(pred)':>10} {'Pos(pred)':>10}")
     for i, label in enumerate(LABEL_NAMES):
         print(f"  {label:>10} {cm[i][0]:>10} {cm[i][1]:>10} {cm[i][2]:>10}")
-    
+
     # Save model
     print(f"\nSaving model to {MODEL_DIR}/...")
     os.makedirs(MODEL_DIR, exist_ok=True)
     model.save_pretrained(MODEL_DIR)
     tokenizer.save_pretrained(MODEL_DIR)
-    
+
     metrics = {
         "accuracy": round(accuracy, 4),
         "f1_macro": round(f1_macro, 4),
@@ -264,9 +280,26 @@ def main():
     }
     with open(os.path.join(MODEL_DIR, "metrics.json"), "w") as f:
         json.dump(metrics, f, indent=2)
-    
+
     print("  Done!")
-    
+
+    # Log metrics and artifacts to MLflow
+    if mlflow.active_run():
+        mlflow.log_metrics(
+            {
+                "accuracy": accuracy,
+                "f1_macro": f1_macro,
+                "f1_weighted": f1_weighted,
+                "training_time_minutes": elapsed / 60,
+            }
+        )
+        mlflow.log_artifact(os.path.join(MODEL_DIR, "metrics.json"))
+        # Check if config.json exists before logging it (it's saved by save_pretrained)
+        config_path = os.path.join(MODEL_DIR, "config.json")
+        if os.path.exists(config_path):
+            mlflow.log_artifact(config_path)
+        print("  Model metrics logged to MLflow.")
+
     # Demo
     print("\n" + "=" * 60)
     print("DEMO: Try it on sample reviews")
@@ -289,4 +322,6 @@ def main():
 
 
 if __name__ == "__main__":
-    main()
+    experiment_id = get_or_create_experiment("Sentiment_Classification")
+    with mlflow.start_run(experiment_id=experiment_id, run_name="distilbert_fine_tuned"):
+        main()
