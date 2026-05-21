@@ -9,6 +9,11 @@ on:
 jobs:
   lint-and-test:
     runs-on: ubuntu-latest
+    env:
+      ASTRA_DB_API_ENDPOINT: "https://dummy-endpoint.apps.astra.datastax.com"
+      ASTRA_DB_APPLICATION_TOKEN: "AstraCS:dummy-token"
+      ASTRA_DB_KEYSPACE: "dummy_keyspace"
+      GROQ_API_KEY: "gsk_dummy_api_key"
 
     steps:
     - name: Checkout Code
