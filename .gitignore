@@ -36,3 +36,6 @@ Thumbs.db
 
 # MLflow Local Tracking runs
 mlruns/
+
+# Project Implementation Guide
+implementation_guide.md
