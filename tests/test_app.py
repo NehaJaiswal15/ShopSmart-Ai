@@ -105,7 +105,7 @@ def test_get_response_product_related(client, mock_components):
 
     # Assert base answer is returned
     assert "This is a great boat headset" in answer
-    
+
     # Assert sentiment enrichment is present in the response
     assert "Review Sentiment" in answer
     assert "Positive: 1" in answer
